@@ -1,0 +1,53 @@
+// 1. The Observer Interface
+INTERFACE Customer:
+    METHOD update(rolexType)
+
+// 2. The Concrete Observers (The hungry people)
+CLASS ConcreteCustomer IMPLEMENTS Customer:
+    ATTRIB name
+    ATTRIB preference
+
+    CONSTRUCTOR(name, preference):
+        this.name = name
+        this.preference = preference
+
+    METHOD update(rolexType):
+        IF rolexType == this.preference:
+            PRINT(name + " says: My " + rolexType + " is ready! Time to eat.")
+        ELSE:
+            PRINT(name + " says: Not my order. Still waiting...")
+
+// 3. The Subject (Mama Betty's Stand)
+CLASS RolexStand:
+    ATTRIB observers = LIST()
+
+    METHOD registerCustomer(customer):
+        observers.ADD(customer)
+
+    METHOD removeCustomer(customer):
+        observers.REMOVE(customer)
+
+    METHOD notifyCustomers(rolexType):
+        PRINT("--- Stand announces: 'ROLEX READY: " + rolexType + "!' ---")
+        FOR EACH customer IN observers:
+            customer.update(rolexType)
+
+// 4. Execution Logic
+MAIN:
+    // Setup the stand
+    mamaBetty = NEW RolexStand()
+
+    // Create the observers from your image
+    john = NEW ConcreteCustomer("John", "Chapati")
+    sarah = NEW ConcreteCustomer("Sarah", "Student Budget")
+    mike = NEW ConcreteCustomer("Mike", "Premium")
+    grace = NEW ConcreteCustomer("Grace", "Egg Special")
+
+    // Customers "subscribe" by waiting at the stand
+    mamaBetty.registerCustomer(john)
+    mamaBetty.registerCustomer(sarah)
+    mamaBetty.registerCustomer(mike)
+    mamaBetty.registerCustomer(grace)
+
+    // Mama Betty finishes a rolex and notifies everyone
+    mamaBetty.notifyCustomers("Student Budget")

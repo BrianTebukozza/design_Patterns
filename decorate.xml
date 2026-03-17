@@ -1,0 +1,98 @@
+// ============================================================
+// DESIGN PATTERN: DECORATOR
+// ANALOGY: THE UGANDAN SHAMBA (GARDEN)
+// ============================================================
+
+// 1. THE COMPONENT INTERFACE
+// This defines the "shape" of any garden object.
+Interface Garden:
+    Method getDescription() -> String
+    Method getValue() -> Number
+
+
+// 2. THE CONCRETE COMPONENT
+// The base object we are going to decorate.
+// It works on its own, but it's very basic.
+Class BareLand implements Garden:
+    Method getDescription():
+        Return "A plain piece of land in Central Uganda"
+
+    Method getValue():
+        Return 5000000 // Base price in UGX
+
+
+// 3. THE BASE DECORATOR (The Wrapper)
+// This class "has a" Garden and also "is a" Garden.
+// It acts as the middleman for all specific decorators.
+Abstract Class GardenDecorator implements Garden:
+    Property decoratedGarden: Garden
+
+    // The constructor takes any Garden object (BareLand or another Decorator)
+    Constructor(Garden g):
+        this.decoratedGarden = g
+
+    // By default, it just passes the request to the inner garden
+    Method getDescription():
+        Return decoratedGarden.getDescription()
+
+    Method getValue():
+        Return decoratedGarden.getValue()
+
+
+// 4. CONCRETE DECORATORS
+// These classes add new "behavior" or value to the land.
+
+// Adding Food Crops
+Class MatookeDecorator extends GardenDecorator:
+    Method getDescription():
+        // We take the existing description and append our new "layer"
+        Return decoratedGarden.getDescription() + ", with Matooke plantation"
+
+    Method getValue():
+        // We take the existing value and add the value of the Matooke
+        Return decoratedGarden.getValue() + 2000000
+
+// Adding Cash Crops
+Class CoffeeDecorator extends GardenDecorator:
+    Method getDescription():
+        Return decoratedGarden.getDescription() + ", with Arabica Coffee trees"
+
+    Method getValue():
+        Return decoratedGarden.getValue() + 3500000
+
+// Adding Security
+Class FenceDecorator extends GardenDecorator:
+    Method getDescription():
+        Return decoratedGarden.getDescription() + ", and a secure barbed wire fence"
+
+    Method getValue():
+        Return decoratedGarden.getValue() + 1200000
+
+
+// 5. THE CLIENT (Execution Logic)
+// This is where we "plant" and "build" dynamically.
+Main:
+    // Start with the base land
+    Garden myShamba = new BareLand()
+    
+    // "Wrap" the land with Matooke
+    myShamba = new MatookeDecorator(myShamba)
+    
+    // "Wrap" the Matooke-land with Coffee
+    myShamba = new CoffeeDecorator(myShamba)
+    
+    // "Wrap" everything with a Fence
+    myShamba = new FenceDecorator(myShamba)
+
+    // When we call these methods, it ripples through all the layers
+    // Like peeling an onion from the outside in!
+    Print("Final Description: " + myShamba.getDescription())
+    Print("Total Shamba Value: " + myShamba.getValue() + " UGX")
+
+// ============================================================
+// SUMMARY OF LOGIC:
+// 1. BareLand says: "I am land."
+// 2. Matooke says: "I am land + Matooke."
+// 3. Coffee says: "I am (land + Matooke) + Coffee."
+// 4. Fence says: "I am ((land + Matooke) + Coffee) + Fence."
+// ============================================================
