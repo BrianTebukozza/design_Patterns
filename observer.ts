@@ -1,23 +1,14 @@
-/** * 1. The Observer Interface 
- * Every customer must have a way to hear the news.
- */
 interface Customer {
     name: string;
     update(rolexType: string): void;
 }
 
-/** * 2. The Subject Interface 
- * Defines how the stand manages its crowd.
- */
 interface Subject {
     registerCustomer(customer: Customer): void;
     removeCustomer(customer: Customer): void;
     notifyCustomers(rolexType: string): void;
 }
 
-/** * 3. The Concrete Subject 
- * Mama Betty's Stand in Wandegeya.
- */
 class RolexStand implements Subject {
     private observers: Customer[] = [];
 
@@ -34,25 +25,15 @@ class RolexStand implements Subject {
         }
     }
 
-    /**
-     * THE PATTERN ENGINE: notifyCustomers
-     * This is where the foreach loop delivers the news to everyone at once.
-     */
     public notifyCustomers(rolexType: string): void {
         console.log(`\n📢 Mama Betty shouts: "ROLEX READY! Type: ${rolexType.toUpperCase()}"`);
         
-        // Use forEach to iterate through every registered customer
         this.observers.forEach((observer: Customer) => {
-            // Logic: The Subject (Stand) calls the update method on each Observer (Customer)
-            // This is the core 'Broadcast' mechanism of the Observer Pattern.
             observer.update(rolexType);
         });
     }
 }
 
-/** * 4. The Concrete Observers 
- * The hungry individuals from your image.
- */
 class ConcreteCustomer implements Customer {
     constructor(
         public name: string, 
@@ -68,27 +49,21 @@ class ConcreteCustomer implements Customer {
     }
 }
 
-// --- Execution ---
 
 const mamaBettyStand = new RolexStand();
 
-// Initializing customers from your screenshot
 const john = new ConcreteCustomer("John", "Chapati");
 const sarah = new ConcreteCustomer("Sarah", "Student Budget");
 const mike = new ConcreteCustomer("Mike", "Premium");
 const grace = new ConcreteCustomer("Grace", "Egg Special");
 
-// Customers start observing (waiting)
 mamaBettyStand.registerCustomer(john);
 mamaBettyStand.registerCustomer(sarah);
 mamaBettyStand.registerCustomer(mike);
 mamaBettyStand.registerCustomer(grace);
 
-// A Rolex is finished!
 mamaBettyStand.notifyCustomers("Student Budget");
 
-// Sarah gets her food and leaves
 mamaBettyStand.removeCustomer(sarah);
 
-// Another Rolex is ready
 mamaBettyStand.notifyCustomers("Premium");

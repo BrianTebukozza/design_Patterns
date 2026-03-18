@@ -1,98 +1,85 @@
-// ============================================================
-// DESIGN PATTERN: DECORATOR
-// ANALOGY: THE UGANDAN SHAMBA (GARDEN)
-// ============================================================
+// ==========================================
+// MAMA BETTY'S ROLEX STAND - DECORATOR PATTERN
+// ==========================================
 
-// 1. THE COMPONENT INTERFACE
-// This defines the "shape" of any garden object.
-Interface Garden:
-    Method getDescription() -> String
-    Method getValue() -> Number
-
-
-// 2. THE CONCRETE COMPONENT
-// The base object we are going to decorate.
-// It works on its own, but it's very basic.
-Class BareLand implements Garden:
-    Method getDescription():
-        Return "A plain piece of land in Central Uganda"
-
-    Method getValue():
-        Return 5000000 // Base price in UGX
+// 1. THE INTERFACE (The Contract)
+// ------------------------------------------
+INTERFACE Rolex:
+    METHOD getDescription() RETURNS String
+    METHOD getCost() RETURNS Number
 
 
-// 3. THE BASE DECORATOR (The Wrapper)
-// This class "has a" Garden and also "is a" Garden.
-// It acts as the middleman for all specific decorators.
-Abstract Class GardenDecorator implements Garden:
-    Property decoratedGarden: Garden
+// 2. THE CONCRETE COMPONENT (The Base Item)
+// ------------------------------------------
+CLASS PlainRolex IMPLEMENTS Rolex:
+    METHOD getDescription():
+        RETURN "Standard Rolex (1 Egg, 1 Chapati)"
 
-    // The constructor takes any Garden object (BareLand or another Decorator)
-    Constructor(Garden g):
-        this.decoratedGarden = g
-
-    // By default, it just passes the request to the inner garden
-    Method getDescription():
-        Return decoratedGarden.getDescription()
-
-    Method getValue():
-        Return decoratedGarden.getValue()
+    METHOD getCost():
+        RETURN 2000 // Base Price in UGX
 
 
-// 4. CONCRETE DECORATORS
-// These classes add new "behavior" or value to the land.
+// 3. THE BASE DECORATOR (The Wrapper Template)
+// ------------------------------------------
+ABSTRACT CLASS RolexDecorator IMPLEMENTS Rolex:
+    ATTRIBUTE wrappedRolex: Rolex // This holds the inner object
 
-// Adding Food Crops
-Class MatookeDecorator extends GardenDecorator:
-    Method getDescription():
-        // We take the existing description and append our new "layer"
-        Return decoratedGarden.getDescription() + ", with Matooke plantation"
+    CONSTRUCTOR(innerRolex):
+        SET wrappedRolex = innerRolex
 
-    Method getValue():
-        // We take the existing value and add the value of the Matooke
-        Return decoratedGarden.getValue() + 2000000
+    METHOD getDescription():
+        // Default: just ask the inner item for its description
+        RETURN wrappedRolex.getDescription()
 
-// Adding Cash Crops
-Class CoffeeDecorator extends GardenDecorator:
-    Method getDescription():
-        Return decoratedGarden.getDescription() + ", with Arabica Coffee trees"
-
-    Method getValue():
-        Return decoratedGarden.getValue() + 3500000
-
-// Adding Security
-Class FenceDecorator extends GardenDecorator:
-    Method getDescription():
-        Return decoratedGarden.getDescription() + ", and a secure barbed wire fence"
-
-    Method getValue():
-        Return decoratedGarden.getValue() + 1200000
+    METHOD getCost():
+        // Default: just ask the inner item for its cost
+        RETURN wrappedRolex.getCost()
 
 
-// 5. THE CLIENT (Execution Logic)
-// This is where we "plant" and "build" dynamically.
-Main:
-    // Start with the base land
-    Garden myShamba = new BareLand()
-    
-    // "Wrap" the land with Matooke
-    myShamba = new MatookeDecorator(myShamba)
-    
-    // "Wrap" the Matooke-land with Coffee
-    myShamba = new CoffeeDecorator(myShamba)
-    
-    // "Wrap" everything with a Fence
-    myShamba = new FenceDecorator(myShamba)
+// 4. CONCRETE DECORATORS (The Add-ons)
+// ------------------------------------------
 
-    // When we call these methods, it ripples through all the layers
-    // Like peeling an onion from the outside in!
-    Print("Final Description: " + myShamba.getDescription())
-    Print("Total Shamba Value: " + myShamba.getValue() + " UGX")
+CLASS ExtraEgg EXTENDS RolexDecorator:
+    METHOD getDescription():
+        RETURN SUPER.getDescription() + ", + Extra Egg"
 
-// ============================================================
-// SUMMARY OF LOGIC:
-// 1. BareLand says: "I am land."
-// 2. Matooke says: "I am land + Matooke."
-// 3. Coffee says: "I am (land + Matooke) + Coffee."
-// 4. Fence says: "I am ((land + Matooke) + Coffee) + Fence."
-// ============================================================
+    METHOD getCost():
+        RETURN SUPER.getCost() + 500
+
+CLASS VeggieMix EXTENDS RolexDecorator:
+    METHOD getDescription():
+        RETURN SUPER.getDescription() + ", with Veggie Mix"
+
+    METHOD getCost():
+        RETURN SUPER.getCost() + 300
+
+CLASS StudentDiscount EXTENDS RolexDecorator:
+    METHOD getDescription():
+        RETURN "PROMO: " + SUPER.getDescription()
+
+    METHOD getCost():
+        RETURN SUPER.getCost() - 200
+
+
+// 5. EXECUTION LOGIC (How Mama Betty builds it)
+// ------------------------------------------
+START PROGRAM:
+    // Case 1: A "Premium" Rolex
+    rolex1 = NEW PlainRolex()
+    rolex1 = NEW ExtraEgg(rolex1)   // Wrapped once
+    rolex1 = NEW ExtraEgg(rolex1)   // Wrapped twice (3 eggs total!)
+    rolex1 = NEW VeggieMix(rolex1)  // Wrapped thrice
+
+    PRINT("Order 1: " + rolex1.getDescription())
+    PRINT("Total: " + rolex1.getCost() + " UGX")
+
+    PRINT("--------------------------------")
+
+    // Case 2: A Student Special
+    rolex2 = NEW PlainRolex()
+    rolex2 = NEW VeggieMix(rolex2)
+    rolex2 = NEW StudentDiscount(rolex2)
+
+    PRINT("Order 2: " + rolex2.getDescription())
+    PRINT("Total: " + rolex2.getCost() + " UGX")
+END PROGRAM

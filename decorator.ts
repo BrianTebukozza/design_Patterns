@@ -1,96 +1,79 @@
-// 1. THE COMPONENT INTERFACE
-// This is the "contract." Anything that wants to be a "Garden"
-// MUST have these two methods.
-interface Garden {
+interface Rolex {
   getDescription(): string;
-  getValue(): number;
+  getCost(): number;
 }
 
-// 2. THE CONCRETE COMPONENT
-// This is our starting point: simple, undecorated land.
-class BareLand implements Garden {
+class PlainRolex implements Rolex {
   getDescription(): string {
-    return "A plain piece of land in Central Uganda";
+    return "Standard Rolex (1 Egg, 1 Chapati)";
   }
 
-  getValue(): number {
-    return 5000000; // Base price in UGX
+  getCost(): number {
+    return 2000; // original price
   }
 }
 
-// 3. THE BASE DECORATOR (The Wrapper)
-// Note: It implements 'Garden' so it can be used anywhere a Garden is expected.
-// It also contains a 'Garden' inside it (Composition).
-abstract class GardenDecorator implements Garden {
-  protected decoratedGarden: Garden;
+abstract class RolexDecorator implements Rolex {
+  protected decoratedRolex: Rolex;
 
-  constructor(g: Garden) {
-    this.decoratedGarden = g;
+  constructor(rolex: Rolex) {
+    this.decoratedRolex = rolex;
   }
 
-  // By default, it just asks the inner garden for the info
   getDescription(): string {
-    return this.decoratedGarden.getDescription();
+    return this.decoratedRolex.getDescription();
   }
 
-  getValue(): number {
-    return this.decoratedGarden.getValue();
+  getCost(): number {
+    return this.decoratedRolex.getCost();
   }
 }
 
-// 4. CONCRETE DECORATORS
-// These classes actually change the behavior/data.
-
-class MatookeDecorator extends GardenDecorator {
+class ExtraEgg extends RolexDecorator {
   getDescription(): string {
-    return this.decoratedGarden.getDescription() + ", with Matooke plantation";
+    return this.decoratedRolex.getDescription() + ", + Extra Egg";
   }
 
-  getValue(): number {
-    return this.decoratedGarden.getValue() + 2000000;
+  getCost(): number {
+    return this.decoratedRolex.getCost() + 500;
   }
 }
 
-class CoffeeDecorator extends GardenDecorator {
+class VeggieMix extends RolexDecorator {
   getDescription(): string {
-    return (
-      this.decoratedGarden.getDescription() + ", with Arabica Coffee trees"
-    );
+    return this.decoratedRolex.getDescription() + ", with Veggie Mix";
   }
 
-  getValue(): number {
-    return this.decoratedGarden.getValue() + 3500000;
+  getCost(): number {
+    return this.decoratedRolex.getCost() + 300;
   }
 }
 
-class FenceDecorator extends GardenDecorator {
+class StudentDiscount extends RolexDecorator {
   getDescription(): string {
-    return (
-      this.decoratedGarden.getDescription() + ", and a secure barbed wire fence"
-    );
+    return "PROMO: " + this.decoratedRolex.getDescription();
   }
 
-  getValue(): number {
-    return this.decoratedGarden.getValue() + 1200000;
+  getCost(): number {
+    return this.decoratedRolex.getCost() - 200;
   }
 }
 
-// 5. THE CLIENT CODE
-// Here is how we build our "Shamba" layer by layer.
+console.log("--- Mama Betty's Rolex Stand ---");
 
-// Start with the base land
-let myShamba: Garden = new BareLand();
+let order1: Rolex = new PlainRolex();
+order1 = new ExtraEgg(order1);
+order1 = new ExtraEgg(order1);
+order1 = new VeggieMix(order1);
 
-// Wrap it in Matooke
-myShamba = new MatookeDecorator(myShamba);
+console.log("Customer 1 Order: " + order1.getDescription());
+console.log("Price: " + order1.getCost() + " UGX");
 
-// Wrap that result in Coffee
-myShamba = new CoffeeDecorator(myShamba);
+console.log("--------------------------------");
 
-// Wrap everything in a Fence
-myShamba = new FenceDecorator(myShamba);
+let order2: Rolex = new PlainRolex();
+order2 = new VeggieMix(order2);
+order2 = new StudentDiscount(order2);
 
-// Final Results
-console.log("--- My Shamba Details ---");
-console.log("Description: " + myShamba.getDescription());
-console.log("Total Value: " + myShamba.getValue().toLocaleString() + " UGX");
+console.log("Customer 2 Order: " + order2.getDescription());
+console.log("Price: " + order2.getCost() + " UGX");
