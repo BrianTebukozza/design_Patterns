@@ -1,0 +1,29 @@
+CLASS InventorySystem:
+    METHOD checkStock(productId):
+        PRINT "Checking stock in Kampala Warehouse for " + productId [cite: 52]
+        RETURN true // Assume available [cite: 53]
+
+    METHOD reserveItem(productId, quantity):
+        PRINT "Reserving " + quantity + " units of " + productId [cite: 55]
+END CLASS
+
+CLASS PaymentProcessor:
+    METHOD validatePayment(details):
+        PRINT "Validating payment for " + details [cite: 64]
+        IF details is 16 digits OR starts with '256': 
+            RETURN true [cite: 65]
+        ELSE:
+            RETURN false
+
+    METHOD processPayment(amount, details):
+        PRINT "Charging UGX " + amount + " via " + details [cite: 67]
+        RETURN true // Assume success [cite: 69]
+END CLASS
+
+CLASS ShippingService:
+    METHOD shipOrder(orderId, address):
+        PRINT "Dispatching order " + orderId + " to Boda-Boda at " + address [cite: 77]
+
+    METHOD trackPackage(orderId):
+        RETURN "KLA-TRACK-" + orderId [cite: 80]
+END CLASS
